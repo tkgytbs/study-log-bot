@@ -5,30 +5,20 @@ from discord.ext import commands
 import datetime
 import os
 
-token = os.getenv("DISCORD_TOKEN")
-print("読み込んだDISCORD_TOKEN:", repr(token))  # トークンの先頭5文字くらい出ればOK
+# Railwayの環境変数からトークンを取得（.envは不要）
+TOKEN = os.environ.get("DISCORD_TOKEN")
+print("読み込んだDISCORD_TOKEN:", repr(TOKEN))  # 確認用
 
-if token is None:
-    raise ValueError("DISCORD_TOKEN が設定されていません")
-from dotenv import load_dotenv
-
-# .envファイルからトークンを読み込む
-load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
-
-# トークンが取得できなかった場合のエラーチェック
 if TOKEN is None:
-    raise ValueError("DISCORD_TOKEN が .env に設定されていません")
+    raise ValueError("DISCORD_TOKEN が設定されていません")
 
-# インテントの設定（メッセージ内容とボイス状態の検知に必要）
+# インテントの設定
 intents = discord.Intents.default()
 intents.message_content = True
 intents.voice_states = True
 
-# Botインスタンスの作成
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# 入退室時刻を記録する辞書
 pretime_dict = {}
 
 @bot.event
@@ -39,7 +29,6 @@ async def on_ready():
 async def on_voice_state_update(member, before, after):
     print("🎧 ボイスチャンネルの状態が更新されました")
 
-    # ミュート設定の変更ならスキップ
     if before.self_mute != after.self_mute or before.self_deaf != after.self_deaf:
         print("🔇 ミュート設定の変更のため、無視されました")
         return
