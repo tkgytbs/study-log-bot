@@ -4,6 +4,12 @@ import discord
 from discord.ext import commands
 import datetime
 import os
+
+token = os.getenv("DISCORD_TOKEN")
+print("読み込んだDISCORD_TOKEN:", repr(token))  # トークンの先頭5文字くらい出ればOK
+
+if token is None:
+    raise ValueError("DISCORD_TOKEN が設定されていません")
 from dotenv import load_dotenv
 
 # .envファイルからトークンを読み込む
